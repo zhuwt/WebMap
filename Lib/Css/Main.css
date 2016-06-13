@@ -1,0 +1,149 @@
+﻿html,body{
+    height:100%;
+    margin:0;
+    padding:0;
+}
+
+#carLicense{
+    position: absolute;
+    top: 80px;
+}
+
+#titleOfCompany{
+    position: absolute;
+    top: 20px;
+    left: 70px;
+    margin: 0px;
+}
+
+#titleOfCompany > h3{
+    margin: 0px;
+}
+
+#map{
+    height: 100%;
+    width: 100%;
+}
+.controlPosition{
+    position: absolute;
+    top: 7px;
+    right: 7px;
+}
+.statusControl{
+    position: absolute;
+    bottom: 5px;
+    left: 5px;
+}
+
+.modal-backdrop {
+    background-color: red;
+}
+
+/*station label*/
+.stationLabel{
+    text-decoration: none;
+    color: black;
+    font-size: 5pt;
+    font-weight: bold;
+    text-shadow: black 0.1em 0.1em 0.2em;
+    position: relative;
+    /*top:6px;*/
+}
+
+/*Popup style car*/
+.ol-popup {
+    position: absolute;
+    background-color: white;
+    -webkit-filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2));
+    filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2));
+    /*padding: 15px;*/
+    padding: 5px;
+    border-radius: 10px;
+    border: 1px solid #cccccc;
+    bottom: 12px;
+    left: -50px;
+    min-width: 60px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    font-size: 5px;
+    line-height: 12px;
+
+}
+.ol-popup:after, .ol-popup:before {
+    top: 100%;
+    border: solid transparent;
+    content: " ";
+    height: 0;
+    width: 0;
+    position: absolute;
+    pointer-events: none;
+}
+.ol-popup:after {
+    border-top-color: white;
+    border-width: 10px;
+    left: 48px;
+    margin-left: -10px;
+}
+.ol-popup:before {
+    border-top-color: #cccccc;
+    border-width: 11px;
+    left: 48px;
+    margin-left: -11px;
+}
+.ol-popup-closer {
+    text-decoration: none;
+    position: absolute;
+    top: 2px;
+    right: 8px;
+}
+.ol-popup-closer:after {
+    content: "✖";
+}
+
+/*Popup style station*/
+.ol-popup-station {
+    position: absolute;
+    background-color: white;
+    -webkit-filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2));
+    filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2));
+    /*padding: 15px;*/
+    padding: 5px;
+    border-radius: 10px;
+    border: 1px solid #cccccc;
+    bottom: 9px;
+    /*bottom: 12px;*/
+    left: -20px;
+    min-width: 30px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+}
+/*.ol-popup-station:after, .ol-popup:before {*/
+    /*top: 100%;*/
+    /*border: solid transparent;*/
+    /*content: " ";*/
+    /*height: 0;*/
+    /*width: 0;*/
+    /*position: absolute;*/
+    /*pointer-events: none;*/
+/*}*/
+/*.ol-popup-station:after {*/
+    /*border-top-color: white;*/
+    /*border-width: 10px;*/
+    /*left: 18px;*/
+    /*margin-left: -10px;*/
+/*}*/
+/*.ol-popup-station:before {*/
+    /*border-top-color: #cccccc;*/
+    /*border-width: 11px;*/
+    /*left: 48px;*/
+    /*margin-left: -11px;*/
+/*}*/
+/*.ol-popup-station-closer {*/
+    /*text-decoration: none;*/
+    /*position: absolute;*/
+    /*top: 2px;*/
+    /*right: 8px;*/
+/*}*/
+/*.ol-popup-station-closer:after {*/
+    /*content: "✖";*/
+/*}*/

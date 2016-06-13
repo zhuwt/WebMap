@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="cn">
+<head>
+    <link rel="stylesheet" href="Lib/Css/ol.css" type="text/css">
+    <script type="text/javascript" src="Lib/Script/ol-debug.js"></script>
+
+    <!--jQuery 2.1.4 -->
+    <script type="text/javascript" src="Lib/jquery.min.js"></script>
+
+    <!--bootStrap-->
+    <link rel="stylesheet" href="Lib/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="Lib/bootstrap/css/bootstrap-theme.min.css">
+    <script type="text/javascript" src="Lib/bootstrap/js/bootstrap.min.js"></script>
+
+    <!--custom map CSS-->
+    <link rel="stylesheet" href="Lib/Css/Main.css" type="text/css">
+
+    <title>加液运输控制模拟</title>
+</head>
+<body  style="background-color: lightgray;" onload="app.ControlEvent.load()">
+<div id="map" class="map"></div>
+<div class="ol-control controlPosition">
+    <button onclick="dialog.createStation()">站</button>
+    <button onclick="dialog.createRoad()">路</button>
+    <button onclick="dialog.createCarDialog()">车</button>
+    <button onclick="app.ControlEvent.SetModifyStatus()">改</button>
+    <!--<button onclick="app.ControlEvent.RemoveSelect()">删</button>-->
+    <button onclick="app.ControlEvent.invisible()">图</button>
+    <!--<button onclick="app.ControlEvent.save()">存</button>-->
+    <!--<button onclick="app.ControlEvent.load()">读</button>-->
+    <!--<button onclick="test()">测</button>-->
+</div>
+
+<div class="ol-control statusControl">
+    <button id="statusControlModify" style="width: 40px;">修改</button>
+</div>
+
+<div id="titleOfCompany">
+    <h3 style="background-color: white;opacity: 0.8;">海汇新能源</h3>
+</div>
+
+<div id="carLicense" class="panel panel-primary" style="display: none">
+    <div class="panel-heading">哈密等候的车辆</div>
+    <ul class="list-group" id="ulCarList">
+    </ul>
+</div>
+<!-------------------------------station dialog----------------------------->
+<div class="modal fade" id="createStation" tabindex="-1" role="dialog" aria-labelledby="createStationLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="title">创建站点</h4>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label for="stationName" class="control-label">站点名称:</label>
+                        <input type="text" class="form-control" id="stationName" maxlength="30">
+                    </div>
+                    <div class="form-group">
+                        <label for="stationSize" class="control-label">站点容量:</label>
+                        <input class="form-control" id="stationSize" type="number" min="0" max="9999">
+                    </div>
+                    <div class="form-group">
+                        <label for="consumePerHour" class="control-label">每小时消耗量:</label>
+                        <input class="form-control" id="consumePerHour" type="number" min="0" max="9999">
+                    </div>
+                    <div class="form-group">
+                        <label for="alertSize" class="control-label">警戒量:</label>
+                        <input class="form-control" id="alertSize" type="number" min="0" max="9999">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" id="deleteStation" style="display: none;">删除</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" id="confirmButton">确认</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-------------------------------LineRoad dialog----------------------------->
+<div class="modal fade" id="createRoad" tabindex="-1" role="dialog" aria-labelledby="createRoadLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="roadTitle">创建路线</h4>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label for="RoadLength" class="control-label">路线运行时间(小时):</label>
+                        <input type="number" class="form-control" id="RoadLength" min="1" max="9999">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" id="deleteRoad" style="display: none;">删除</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" id="confirmRoadInfo">创建</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-------------------------------Car dialog----------------------------->
+<div class="modal fade" id="car" tabindex="-1" role="dialog" aria-labelledby="carLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="carTitle">创建车辆信息</h4>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <label for="radioCreateCar" class="control-label">新建:</label>
+                    <input id="radioCreateCar" type="radio" name="carAction" value="create" onchange="dialog.selChange('create')" checked="true">
+                    <label for="radioModifyCar" class="control-label">调度:</label>
+                    <input id="radioModifyCar" type="radio" name="carAction" value="modify" onchange="dialog.selChange('modify')" >
+                </form>
+                <form>
+                    <div class="form-group" id="createCarLicenseDiv">
+                        <label for="createCarLicense" class="control-label">车牌号:</label>
+                        <input type="text" class="form-control" id="createCarLicense" maxlength="8">
+                    </div>
+                    <div class="form-group" id="modifyCarLicenseDiv" style="display: none;">
+                        <label for="modifyCarLicense" class="control-label">车牌号:</label>
+                        <select class="form-control" id="modifyCarLicense" onchange="dialog.setUIValueByCarLicense()">
+                        </select>
+                    </div>
+                    <div>
+                        <label for="carMoveDelay" class="control-label">延迟发车(正数延迟，负数提前)：</label>
+                        <input id="carMoveDelay" type="number" class="form-control" value="0" max="24" min="-24">
+                    </div>
+                </form>
+                <div style="height: 15px;"></div>
+                <form class="form-inline">
+                    <div class="form-group">
+                        <label for="startPoint" class="control-label">起点:</label>
+                        <select id="startPoint" class="form-control">
+                        </select>
+                        <label for="endPoint" class="control-label">终点:</label>
+                        <select id="endPoint" class="form-control">
+                        </select>
+                        <label id="carColorLabel" for="carColor" class="control-label">车队颜色:</label>
+                        <select id="carColor" class="form-control" onchange="dialog.changeColor()">
+                            <option style="background-color: #ffffff"></option>
+                            <option style="background-color: #5cb85c"></option>
+                            <option style="background-color: #5bc0de"></option>
+                            <option style="background-color: #f0ad4e"></option>
+                            <option style="background-color: #d9534f"></option>
+                        </select>
+                        <label id="labelOfArrival" for="carStatus" class="control-label" style="display: none;">是否到达:</label>
+                        <input id="carStatus" type="text" class="form-control" disabled="true" style="display: none;">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" id="deleteCar" onclick="dialog.deleteCar()" style="display: none;">删除</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" id="confirmCarInfo" onclick="dialog.confirmCarInfo()">创建</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-------------------------------message dialog----------------------------->
+<div class="modal fade" id="messageBox" tabindex="-1" role="dialog" aria-labelledby="messageBoxLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="messageBoxTitle"></h4>
+            </div>
+            <div class="modal-body">
+                <p id="textOfMessageBox"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">了解</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" src="Script/Common.js"></script>
+<script type="text/javascript" src="Script/Resource.js"></script>
+<script type="text/javascript" src="Script/Station.js"></script>
+<script type="text/javascript" src="Script/Road.js"></script>
+<script type="text/javascript" src="Script/car.js"></script>
+<script type="text/javascript" src="Script/Map.js"></script>
+<script type="text/javascript" src="Script/DisplayCarLicense.js"></script>
+<script type="text/javascript" src="Script/PopupDialog.js"></script>
+<script type="text/javascript" src="Script/MessageBox.js"></script>
+
+
+</body>
+</html>
